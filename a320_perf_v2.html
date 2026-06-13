@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#02060a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="A320 PERF">
+<meta name="mobile-web-app-capable" content="yes">
+<title>A320neo PERF</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%2302060a'/%3E%3Cpath d='M2 18l13-4 2-9 2 9 13 4-13 2-2 8-2-8z' fill='%23fbbf24'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='32' fill='%2302060a'/%3E%3Cpath d='M14 100l72-22 12-50 12 50 72 22-72 12-12 44-12-44z' fill='%23fbbf24'/%3E%3C/svg%3E">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=JetBrains+Mono:wght@400;500;700&display=swap');
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: 'JetBrains Mono', ui-monospace, monospace; letter-spacing: 0.02em; color: #fcd34d; background: radial-gradient(ellipse at top, #0a1420 0%, #050a10 60%, #02060a 100%); min-height: 100vh; -webkit-tap-highlight-color: transparent; }
+.app { max-width: 480px; margin: 0 auto; padding: 20px 16px 24px; min-height: 100vh; position: relative; background-image: linear-gradient(rgba(56,189,248,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(56,189,248,0.05) 1px, transparent 1px); background-size: 24px 24px; }
+.font-display { font-family: 'Share Tech Mono', ui-monospace, monospace; }
+.glow-amber   { text-shadow: 0 0 8px rgba(255,176,0,.55), 0 0 18px rgba(255,176,0,.25); }
+.glow-green   { text-shadow: 0 0 6px rgba(74,222,128,.55), 0 0 14px rgba(74,222,128,.25); }
+.glow-cyan    { text-shadow: 0 0 6px rgba(56,189,248,.55); }
+.glow-magenta { text-shadow: 0 0 6px rgba(232,121,249,.6); }
+.glow-red     { text-shadow: 0 0 6px rgba(248,113,113,.6); }
+.topbar { display: flex; justify-content: space-between; align-items: center; font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em; color: rgba(56,189,248,.7); margin-bottom: 12px; }
+.led { width: 8px; height: 8px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 6px #4ade80, 0 0 12px #4ade80; display: inline-block; margin-right: 8px; vertical-align: middle; }
+.tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 12px; border: 1px solid rgba(56,189,248,.25); background: rgba(0,0,0,.4); padding: 4px; }
+.tab { background: transparent; border: 1px solid transparent; cursor: pointer; padding: 10px 8px; font-family: 'Share Tech Mono', monospace; font-size: 13px; color: rgba(125,211,252,.7); text-transform: uppercase; letter-spacing: 0.2em; transition: all .15s; touch-action: manipulation; }
+.tab.active { border-color: rgba(251,191,36,.7); background: rgba(251,191,36,.1); color: #fcd34d; text-shadow: 0 0 8px rgba(255,176,0,.55); }
+.panel { border: 1px solid rgba(56,189,248,.25); background: rgba(0,0,0,.4); padding: 12px; margin-bottom: 8px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04), inset 0 -1px 0 rgba(0,0,0,.5); }
+.panel-title { border-color: rgba(251,191,36,.3); padding: 12px 16px; }
+.panel-title .sub { font-size: 10px; color: rgba(125,211,252,.6); text-transform: uppercase; letter-spacing: 0.3em; }
+.panel-title .main { font-family: 'Share Tech Mono', monospace; font-size: 22px; color: #fcd34d; text-shadow: 0 0 8px rgba(255,176,0,.55); line-height: 1.1; }
+.panel-title .info { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: rgba(252,211,77,.6); letter-spacing: 0.18em; }
+.panel-display { position: relative; overflow: hidden; border-color: rgba(251,191,36,.4); background: rgba(26,15,0,.8); padding: 14px 16px; }
+.panel-display::before { content: ''; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, transparent 0, transparent 2px, rgba(0,0,0,.18) 3px, transparent 4px); mix-blend-mode: multiply; }
+.panel-display-clb { border-color: rgba(74,222,128,.4); background: rgba(0,26,13,.8); }
+.panel-display-des { border-color: rgba(232,121,249,.4); background: rgba(26,0,26,.8); }
+.section-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.25em; color: rgba(252,211,77,.6); margin-bottom: 10px; }
+.section-label.cyan  { color: rgba(56,189,248,.7); }
+.section-label.green { color: rgba(74,222,128,.7); }
+.section-label.magenta { color: rgba(232,121,249,.7); }
+.out-grid { display: grid; gap: 8px; }
+.out-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+.out-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+.out-cell { background: rgba(0,0,0,.6); border: 1px solid rgba(74,222,128,.4); padding: 10px 6px; text-align: center; }
+.out-cell.magenta { border-color: rgba(232,121,249,.4); }
+.out-cell.cyan    { border-color: rgba(56,189,248,.4); }
+.out-cell .lbl  { font-size: 10px; color: rgba(74,222,128,.7); text-transform: uppercase; letter-spacing: 0.2em; }
+.out-cell.magenta .lbl { color: rgba(232,121,249,.7); }
+.out-cell.cyan    .lbl { color: rgba(56,189,248,.7); }
+.out-cell .val  { font-family: 'Share Tech Mono', monospace; font-size: 30px; color: #6ee7b7; text-shadow: 0 0 6px rgba(74,222,128,.55), 0 0 14px rgba(74,222,128,.25); line-height: 1; margin: 6px 0; font-variant-numeric: tabular-nums; }
+.out-cell.magenta .val { color: #f0abfc; text-shadow: 0 0 6px rgba(232,121,249,.6); }
+.out-cell.cyan    .val { color: #7dd3fc; text-shadow: 0 0 6px rgba(56,189,248,.55); }
+.out-cell .unit { font-size: 9px; color: rgba(74,222,128,.5); }
+.out-cell.magenta .unit { color: rgba(232,121,249,.5); }
+.out-cell.cyan    .unit { color: rgba(56,189,248,.5); }
+.disp-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.disp-header .info { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: rgba(252,211,77,.7); }
+.disp-header.green .info { color: rgba(74,222,128,.6); }
+.disp-header.magenta .info { color: rgba(232,121,249,.6); }
+.input-grid { display: grid; gap: 10px; }
+.input-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+.input-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+.field-label { display: block; font-size: 10px; color: rgba(56,189,248,.7); text-transform: uppercase; letter-spacing: 0.22em; margin-bottom: 4px; }
+.input { width: 100%; background: rgba(0,0,0,.6); border: 1px solid rgba(56,189,248,.3); padding: 8px 12px; font-family: 'Share Tech Mono', monospace; font-size: 18px; color: #7dd3fc; text-shadow: 0 0 6px rgba(56,189,248,.55); outline: none; font-variant-numeric: tabular-nums; }
+.input:focus { border-color: rgba(56,189,248,.7); }
+.stepper { display: flex; border: 1px solid rgba(56,189,248,.3); background: rgba(0,0,0,.6); }
+.stepper button { background: transparent; border: none; cursor: pointer; font-family: 'Share Tech Mono', monospace; font-size: 22px; color: #fcd34d; padding: 6px 16px; line-height: 1; touch-action: manipulation; transition: background .1s; }
+.stepper button:hover  { background: rgba(251,191,36,.1); }
+.stepper button:active { background: rgba(251,191,36,.2); }
+.stepper button:first-child { border-right: 1px solid rgba(56,189,248,.3); }
+.stepper button:last-child  { border-left:  1px solid rgba(56,189,248,.3); }
+.stepper .input { border: none; text-align: center; flex: 1; min-width: 0; padding: 8px 4px; }
+.conf-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; }
+.conf-btn { background: rgba(0,0,0,.4); border: 1px solid rgba(56,189,248,.2); padding: 9px 4px; cursor: pointer; font-family: 'Share Tech Mono', monospace; font-size: 13px; color: rgba(125,211,252,.7); transition: all .12s; touch-action: manipulation; }
+.conf-btn:hover { border-color: rgba(56,189,248,.5); }
+.conf-btn.active { border-color: rgba(251,191,36,.7); background: rgba(251,191,36,.1); color: #fcd34d; text-shadow: 0 0 8px rgba(255,176,0,.55); }
+.toggle-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding-top: 8px; border-top: 1px solid rgba(56,189,248,.1); margin-top: 8px; }
+.toggle { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,.4); border: 1px solid rgba(56,189,248,.2); padding: 8px 12px; cursor: pointer; color: rgba(125,211,252,.7); transition: all .12s; touch-action: manipulation; }
+.toggle .name { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; }
+.toggle .state { font-family: 'Share Tech Mono', monospace; font-size: 14px; }
+.toggle.on-amber { border-color: rgba(251,191,36,.7); background: rgba(251,191,36,.1); color: #fcd34d; }
+.toggle.on-amber .state { text-shadow: 0 0 8px rgba(255,176,0,.55); }
+.toggle.on-green { border-color: rgba(74,222,128,.6); background: rgba(74,222,128,.1); color: #6ee7b7; }
+.toggle.on-green .state { text-shadow: 0 0 6px rgba(74,222,128,.55); }
+.panel-clb { border-color: rgba(74,222,128,.25); }
+.panel-des { border-color: rgba(232,121,249,.25); }
+.panel-clb .section-label, .panel-des .section-label { display: flex; align-items: center; gap: 6px; }
+.error-panel { border: 1px solid rgba(248,113,113,.4); background: rgba(26,0,0,.8); padding: 20px 16px; text-align: center; margin-bottom: 12px; }
+.error-panel .msg { font-family: 'Share Tech Mono', monospace; color: #f87171; text-shadow: 0 0 6px rgba(248,113,113,.6); font-size: 14px; animation: blink 1.1s steps(2) infinite; }
+@keyframes blink { 50% { opacity: .2; } }
+.warn { border: 1px solid rgba(251,191,36,.2); background: rgba(251,191,36,.05); padding: 8px 12px; margin-bottom: 8px; font-size: 9px; color: rgba(252,211,77,.7); text-transform: uppercase; letter-spacing: 0.18em; line-height: 1.5; }
+.footer-row { display: flex; justify-content: space-between; font-size: 9px; color: rgba(56,189,248,.4); text-transform: uppercase; letter-spacing: 0.25em; }
+.footer-row span:last-child { font-family: 'Share Tech Mono', monospace; }
+.hidden { display: none !important; }
+.flex-controls { display: flex; justify-content: center; gap: 4px; margin: 6px 0 2px; }
+.mini-btn { background: rgba(0,0,0,.5); border: 1px solid rgba(232,121,249,.35); color: #f0abfc; font-family: 'Share Tech Mono', monospace; min-width: 32px; height: 26px; cursor: pointer; padding: 0; font-size: 14px; line-height: 1; touch-action: manipulation; transition: all .12s; }
+.mini-btn:hover  { background: rgba(232,121,249,.15); }
+.mini-btn:active { background: rgba(232,121,249,.3); }
+.mini-btn:disabled { opacity: .25; cursor: not-allowed; }
+.mini-btn.rst { font-size: 13px; }
+.out-cell.magenta.man-mode { border-color: rgba(232,121,249,.8); box-shadow: 0 0 8px rgba(232,121,249,.25), inset 0 1px 0 rgba(255,255,255,.05); }
+.out-cell.magenta.man-mode .val { text-shadow: 0 0 10px rgba(232,121,249,.85), 0 0 20px rgba(232,121,249,.45); }
+.out-cell.magenta.warn-mode { border-color: rgba(251,191,36,.85); box-shadow: 0 0 10px rgba(251,191,36,.3), inset 0 1px 0 rgba(255,255,255,.05); }
+.out-cell.magenta.warn-mode .val { color: #fcd34d; text-shadow: 0 0 10px rgba(255,176,0,.7), 0 0 20px rgba(255,176,0,.35); }
+.out-cell.magenta.warn-mode .lbl, .out-cell.magenta.warn-mode .unit { color: rgba(252,211,77,.8); }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div><span class="led"></span><span>PERF READY</span></div>
+    <div class="font-display" id="clock" style="color: rgba(252,211,77,.8)">--:--:--Z</div>
+  </div>
+  <div class="tabs">
+    <button class="tab active" data-tab="vsp">V-Speeds</button>
+    <button class="tab" data-tab="cd">CLB · DES</button>
+  </div>
+  <div id="tab-vsp">
+    <div class="panel panel-title">
+      <div class="sub">A320neo · LEAP-1A</div>
+      <div class="main">TAKEOFF PERF</div>
+      <div class="info">// V1 · VR · V2 · FLEX · THS</div>
+    </div>
+    <div class="panel panel-display" id="vsp-display">
+      <div class="disp-header">
+        <span class="section-label">V-Speeds · IAS [kt]</span>
+        <span class="info" id="vsp-isa">ΔISA +0.0°</span>
+      </div>
+      <div class="out-grid cols-3" id="vsp-cells">
+        <div class="out-cell"><div class="lbl">V1</div><div class="val" id="v1">--</div><div class="unit">kt</div></div>
+        <div class="out-cell"><div class="lbl">VR</div><div class="val" id="vr">--</div><div class="unit">kt</div></div>
+        <div class="out-cell"><div class="lbl">V2</div><div class="val" id="v2">--</div><div class="unit">kt</div></div>
+      </div>
+    </div>
+    <div class="panel panel-display" id="ft-display">
+      <div class="section-label">Perf Setting</div>
+      <div class="out-grid cols-2">
+        <div class="out-cell magenta" id="flex-cell">
+          <div class="lbl">FLEX TO</div>
+          <div class="val" id="flex-val">--</div>
+          <div class="flex-controls" id="flex-controls">
+            <button class="mini-btn" id="flex-dec" aria-label="decrement">−</button>
+            <button class="mini-btn rst" id="flex-rst" aria-label="reset to auto">↺</button>
+            <button class="mini-btn" id="flex-inc" aria-label="increment">+</button>
+          </div>
+          <div class="unit" id="flex-sub">assumed temp</div>
+        </div>
+        <div class="out-cell cyan">
+          <div class="lbl">THS</div>
+          <div class="val" id="ths-val">--</div>
+          <div class="unit" id="ths-sub">trim</div>
+        </div>
+      </div>
+    </div>
+    <div class="error-panel hidden" id="vsp-error"><div class="msg">⚠ <span id="vsp-error-msg"></span></div></div>
+    <div class="panel">
+      <div class="section-label cyan">Input Parameters</div>
+      <div class="input-grid cols-2" style="margin-bottom: 10px;">
+        <div><label class="field-label">TOW · t</label><input class="input" id="in-tow" inputmode="decimal" value="70"></div>
+        <div>
+          <label class="field-label">CG · % MAC</label>
+          <div class="stepper">
+            <button id="cg-dec">−</button>
+            <input class="input" id="in-cg" inputmode="decimal" value="28">
+            <button id="cg-inc">+</button>
+          </div>
+        </div>
+        <div><label class="field-label">PA · ft</label><input class="input" id="in-pa" inputmode="decimal" value="0"></div>
+        <div><label class="field-label">OAT · °C</label><input class="input" id="in-oat" inputmode="decimal" value="15"></div>
+      </div>
+      <div style="margin-bottom: 10px;">
+        <label class="field-label">Flap CONF</label>
+        <div class="conf-row" id="conf-row">
+          <button class="conf-btn active" data-conf="1+F">1+F</button>
+          <button class="conf-btn" data-conf="2">2</button>
+          <button class="conf-btn" data-conf="3">3</button>
+        </div>
+      </div>
+      <div class="toggle-row">
+        <button class="toggle" id="tog-ai"><span class="name">Anti-Ice</span><span class="state">OFF</span></button>
+        <button class="toggle on-green" id="tog-pk"><span class="name">Packs</span><span class="state">ON</span></button>
+      </div>
+    </div>
+    <div class="warn">⚠ Approssimazione · Solo simulazione · Non per uso operativo reale</div>
+    <div class="footer-row"><span>REF · FCOM-STYLE</span><span>A320neo · FBW</span></div>
+  </div>
+  <div id="tab-cd" class="hidden">
+    <div class="panel panel-title">
+      <div class="sub">A320neo · Nav</div>
+      <div class="main">CLB / DES PLANNER</div>
+      <div class="info">// T/C · T/D · RANGE &amp; TIME</div>
+    </div>
+    <div class="error-panel hidden" id="cd-error"><div class="msg">⚠ <span id="cd-error-msg"></span></div></div>
+    <div class="panel panel-display panel-display-clb" id="toc-display">
+      <div class="disp-header green">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span class="font-display glow-green" style="color: #6ee7b7; font-size: 16px;">▲ T/C</span>
+          <span class="section-label green" style="margin: 0;">Top of Climb</span>
+        </div>
+        <span class="info" id="toc-delta">Δ -- ft</span>
+      </div>
+      <div class="out-grid cols-2">
+        <div class="out-cell"><div class="lbl">Distance</div><div class="val" id="toc-nm">--</div><div class="unit">NM</div></div>
+        <div class="out-cell"><div class="lbl">Time</div><div class="val" id="toc-t">--</div><div class="unit">min</div></div>
+      </div>
+    </div>
+    <div class="panel panel-display panel-display-des" id="tod-display">
+      <div class="disp-header magenta">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span class="font-display glow-magenta" style="color: #f0abfc; font-size: 16px;">▼ T/D</span>
+          <span class="section-label magenta" style="margin: 0;">Top of Descent</span>
+        </div>
+        <span class="info" id="tod-delta">Δ -- ft</span>
+      </div>
+      <div class="out-grid cols-2">
+        <div class="out-cell magenta"><div class="lbl">Distance</div><div class="val" id="tod-nm">--</div><div class="unit">NM</div></div>
+        <div class="out-cell magenta"><div class="lbl">Time</div><div class="val" id="tod-t">--</div><div class="unit">min</div></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="section-label cyan">Profile</div>
+      <div class="input-grid cols-3">
+        <div><label class="field-label">Cruise FL</label><input class="input" id="in-fl" inputmode="decimal" value="350"></div>
+        <div><label class="field-label">Dep · ft</label><input class="input" id="in-dep" inputmode="decimal" value="0"></div>
+        <div><label class="field-label">Dest · ft</label><input class="input" id="in-dst" inputmode="decimal" value="0"></div>
+      </div>
+    </div>
+    <div class="panel panel-clb">
+      <div class="section-label green"><span style="color:#6ee7b7;">▲</span> Climb Profile</div>
+      <div class="input-grid cols-2">
+        <div><label class="field-label">GS Climb · kt</label><input class="input" id="in-gsc" inputmode="decimal" value="320"></div>
+        <div><label class="field-label">ROC avg · fpm</label><input class="input" id="in-roc" inputmode="decimal" value="1800"></div>
+      </div>
+    </div>
+    <div class="panel panel-des">
+      <div class="section-label magenta"><span style="color:#f0abfc;">▼</span> Descent Profile</div>
+      <div class="input-grid cols-3">
+        <div><label class="field-label">GS Des · kt</label><input class="input" id="in-gsd" inputmode="decimal" value="300"></div>
+        <div><label class="field-label">Angle · °</label><input class="input" id="in-ang" inputmode="decimal" value="3.0"></div>
+        <div><label class="field-label">Buffer · NM</label><input class="input" id="in-buf" inputmode="decimal" value="5"></div>
+      </div>
+    </div>
+    <div class="warn">⚠ Approssimazione · Solo simulazione · Non per uso operativo reale</div>
+    <div class="footer-row"><span>REF · 3:1 RULE</span><span>A320neo · FBW</span></div>
+  </div>
+</div>
+<script>
+'use strict';
+const OEW_T = 42.6, MTOW_T = 79.0;
+const CONF_OFFSET = { '1+F': 0.0, '2': -4.0, '3': -7.0 };
+const V2_INT = 79.0, V2_SLOPE = 0.95;
+const DV2_PA = 0.8, DV2_ISA = 0.3, DV2_AI = 2.0, DV2_PKOFF = -1.5;
+const VR_BELOW_V2 = 4.0, V1_BELOW_VR = 2.0;
+const FLEX_TREF = 55, FLEX_TMAX = 75, FLEX_TMAX_NORMAL = 70;
+const CG_MIN = 17, CG_MAX = 40;
+const FT_PER_NM = 6076.12;
+const state = { tow: 70, cg: 28, pa: 0, oat: 15, conf: '1+F', ai: false, pk: true, flexMode: 'auto', flexManual: null, fl: 350, dep: 0, dst: 0, gsc: 320, roc: 1800, gsd: 300, ang: 3.0, buf: 5, tab: 'vsp' };
+const $ = (id) => document.getElementById(id);
+const num = (s) => { const v = parseFloat(String(s).replace(',', '.')); return isNaN(v) ? null : v; };
+const isaTemp = (paFt) => 15.0 - 1.98 * (paFt / 1000.0);
+function computeVSpeeds() {
+  const isaDev = state.oat - isaTemp(state.pa);
+  let v2 = V2_INT + V2_SLOPE * state.tow;
+  v2 += CONF_OFFSET[state.conf];
+  v2 += (state.pa / 1000) * DV2_PA;
+  if (isaDev > 0) v2 += isaDev * DV2_ISA;
+  if (state.ai)    v2 += DV2_AI;
+  if (!state.pk)   v2 += DV2_PKOFF;
+  const vr = v2 - VR_BELOW_V2;
+  const v1 = vr - V1_BELOW_VR;
+  return { V1: Math.round(v1), VR: Math.round(vr), V2: Math.round(v2), isaDev: Math.round(isaDev * 10) / 10 };
+}
+function computeFlex() {
+  const margin = MTOW_T - state.tow;
+  let above = margin * 1.2 - (state.pa / 1000) * 1.5;
+  if (state.ai) above -= 3;
+  if (!state.pk) above += 1;
+  const flex = FLEX_TREF + above;
+  const minFlex = Math.max(state.oat + 5, FLEX_TREF);
+  if (flex < minFlex) return { value: null, label: 'TOGA' };
+  return { value: Math.round(flex), label: null };
+}
+function computeTHS() {
+  const raw = 7.9 - 0.26 * state.cg;
+  const r = Math.round(raw * 10) / 10;
+  if (r > 0) return { value: Math.abs(r).toFixed(1), dir: 'UP' };
+  if (r < 0) return { value: Math.abs(r).toFixed(1), dir: 'DN' };
+  return { value: '0.0', dir: '--' };
+}
+function validateVsp() {
+  if (state.tow < OEW_T || state.tow > MTOW_T) return `TOW fuori range (${OEW_T}-${MTOW_T} t)`;
+  if (state.pa < -2000 || state.pa > 14000)    return 'PA fuori range (-2000…14000 ft)';
+  if (state.oat < -60 || state.oat > 60)       return 'OAT fuori range (-60…+60 °C)';
+  if (state.cg < CG_MIN || state.cg > CG_MAX)  return `CG fuori range (${CG_MIN}-${CG_MAX}% MAC)`;
+  return null;
+}
+function computeTOC() {
+  const alt = state.fl * 100 - state.dep;
+  if (alt <= 0) return null;
+  const t = alt / state.roc;
+  const d = (t / 60) * state.gsc;
+  return { alt, t: Math.round(t), d: Math.round(d) };
+}
+function computeTOD() {
+  const alt = state.fl * 100 - state.dst;
+  if (alt <= 0) return null;
+  const rad = state.ang * Math.PI / 180;
+  const ftPerNM = Math.tan(rad) * FT_PER_NM;
+  const geom = alt / ftPerNM;
+  const d = geom + state.buf;
+  const rod = state.gsd * Math.tan(rad) * (FT_PER_NM / 60);
+  const t = alt / rod + (state.buf / state.gsd) * 60;
+  return { alt, t: Math.round(t), d: Math.round(d), rod: Math.round(rod) };
+}
+function validateCd() {
+  if (state.fl < 50 || state.fl > 410)         return 'Cruise FL fuori range (050–410)';
+  if (state.dep < -2000 || state.dep > 14000)  return 'Dep elev fuori range';
+  if (state.dst < -2000 || state.dst > 14000)  return 'Dest elev fuori range';
+  if (state.gsc < 150 || state.gsc > 550)      return 'GS climb fuori range (150–550)';
+  if (state.gsd < 150 || state.gsd > 550)      return 'GS descent fuori range (150–550)';
+  if (state.roc < 300 || state.roc > 4000)     return 'ROC fuori range (300–4000 fpm)';
+  if (state.ang < 1.5 || state.ang > 5)        return 'Angolo discesa fuori range (1.5–5°)';
+  return null;
+}
+function renderVsp() {
+  const err = validateVsp();
+  const errBox = $('vsp-error'), disp1 = $('vsp-display'), disp2 = $('ft-display');
+  if (err) {
+    $('vsp-error-msg').textContent = err;
+    errBox.classList.remove('hidden');
+    disp1.classList.add('hidden');
+    disp2.classList.add('hidden');
+    return;
+  }
+  errBox.classList.add('hidden');
+  disp1.classList.remove('hidden');
+  disp2.classList.remove('hidden');
+  const v = computeVSpeeds();
+  $('v1').textContent = v.V1;
+  $('vr').textContent = v.VR;
+  $('v2').textContent = v.V2;
+  $('vsp-isa').textContent = `ΔISA ${v.isaDev >= 0 ? '+' : ''}${v.isaDev}°`;
+  const f = computeFlex();
+  const flexCell = $('flex-cell');
+  const flexControls = $('flex-controls');
+  if (f.label === 'TOGA') {
+    $('flex-val').textContent = 'TOGA';
+    $('flex-sub').textContent = 'flex N/A';
+    flexControls.style.display = 'none';
+    flexCell.classList.remove('man-mode', 'warn-mode');
+    state.flexMode = 'auto';
+    state.flexManual = null;
+  } else {
+    flexControls.style.display = 'flex';
+    const perfMin = f.value;
+    let displayVal;
+    let isWarn = false;
+    if (state.flexMode === 'auto' || state.flexManual === null) {
+      displayVal = Math.min(perfMin, FLEX_TMAX);
+      flexCell.classList.remove('man-mode', 'warn-mode');
+    } else {
+      displayVal = Math.max(FLEX_TREF, Math.min(FLEX_TMAX, state.flexManual));
+      state.flexManual = displayVal;
+      isWarn = displayVal < perfMin;
+      flexCell.classList.add('man-mode');
+      flexCell.classList.toggle('warn-mode', isWarn);
+    }
+    $('flex-val').textContent = displayVal + '°';
+    if (state.flexMode === 'man') {
+      let suffix = '';
+      if (isWarn) suffix = ' · BELOW PERF MIN';
+      else if (displayVal > FLEX_TMAX_NORMAL) suffix = ' · ABOVE TMAX NORMAL';
+      $('flex-sub').textContent = `MAN · perf min ${perfMin}°${suffix}`;
+    } else {
+      $('flex-sub').textContent = `min ${perfMin}° · max ${FLEX_TMAX}°`;
+    }
+    $('flex-dec').disabled = displayVal <= FLEX_TREF;
+    $('flex-inc').disabled = displayVal >= FLEX_TMAX;
+    $('flex-rst').disabled = state.flexMode === 'auto';
+  }
+  const t = computeTHS();
+  $('ths-val').innerHTML = `${t.value}<span style="font-size:18px;margin-left:4px;opacity:.8">${t.dir}</span>`;
+  $('ths-sub').textContent = `trim · CG ${state.cg}%`;
+}
+function renderCd() {
+  const err = validateCd();
+  const errBox = $('cd-error'), tocBox = $('toc-display'), todBox = $('tod-display');
+  if (err) {
+    $('cd-error-msg').textContent = err;
+    errBox.classList.remove('hidden');
+    tocBox.classList.add('hidden');
+    todBox.classList.add('hidden');
+    return;
+  }
+  errBox.classList.add('hidden');
+  tocBox.classList.remove('hidden');
+  todBox.classList.remove('hidden');
+  const c = computeTOC();
+  if (c) {
+    $('toc-nm').textContent = c.d;
+    $('toc-t').textContent = c.t;
+    $('toc-delta').textContent = `Δ ${c.alt.toLocaleString('it-IT')} ft`;
+  }
+  const d = computeTOD();
+  if (d) {
+    $('tod-nm').textContent = d.d;
+    $('tod-t').textContent = d.t;
+    $('tod-delta').textContent = `Δ ${d.alt.toLocaleString('it-IT')} ft · ${d.rod} fpm`;
+  }
+}
+function render() {
+  if (state.tab === 'vsp') renderVsp();
+  else renderCd();
+}
+function bindInput(id, key) {
+  $(id).addEventListener('input', (e) => {
+    const v = num(e.target.value);
+    if (v !== null) state[key] = v;
+    render();
+  });
+}
+bindInput('in-tow', 'tow');
+bindInput('in-cg', 'cg');
+bindInput('in-pa', 'pa');
+bindInput('in-oat', 'oat');
+$('cg-dec').addEventListener('click', () => {
+  const v = num($('in-cg').value);
+  if (v === null) { state.cg = 28; $('in-cg').value = '28'; render(); return; }
+  const isOnGrid = (v * 2) === Math.round(v * 2);
+  const target = isOnGrid ? v - 0.5 : Math.floor(v * 2) / 2;
+  const clamped = Math.max(CG_MIN, target);
+  state.cg = clamped;
+  $('in-cg').value = clamped % 1 === 0 ? String(clamped) : clamped.toFixed(1);
+  render();
+});
+$('cg-inc').addEventListener('click', () => {
+  const v = num($('in-cg').value);
+  if (v === null) { state.cg = 28; $('in-cg').value = '28'; render(); return; }
+  const isOnGrid = (v * 2) === Math.round(v * 2);
+  const target = isOnGrid ? v + 0.5 : Math.ceil(v * 2) / 2;
+  const clamped = Math.min(CG_MAX, target);
+  state.cg = clamped;
+  $('in-cg').value = clamped % 1 === 0 ? String(clamped) : clamped.toFixed(1);
+  render();
+});
+document.querySelectorAll('.conf-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.conf-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.conf = btn.dataset.conf;
+    render();
+  });
+});
+$('tog-ai').addEventListener('click', () => {
+  state.ai = !state.ai;
+  const t = $('tog-ai');
+  t.classList.toggle('on-amber', state.ai);
+  t.querySelector('.state').textContent = state.ai ? 'ON' : 'OFF';
+  render();
+});
+$('tog-pk').addEventListener('click', () => {
+  state.pk = !state.pk;
+  const t = $('tog-pk');
+  t.classList.toggle('on-green', state.pk);
+  t.querySelector('.state').textContent = state.pk ? 'ON' : 'OFF';
+  render();
+});
+$('flex-dec').addEventListener('click', () => {
+  const f = computeFlex();
+  if (f.label === 'TOGA') return;
+  const cur = state.flexMode === 'auto' || state.flexManual === null ? f.value : state.flexManual;
+  state.flexMode = 'man';
+  state.flexManual = Math.max(FLEX_TREF, cur - 1);
+  render();
+});
+$('flex-inc').addEventListener('click', () => {
+  const f = computeFlex();
+  if (f.label === 'TOGA') return;
+  const cur = state.flexMode === 'auto' || state.flexManual === null ? f.value : state.flexManual;
+  state.flexMode = 'man';
+  state.flexManual = Math.min(FLEX_TMAX, cur + 1);
+  render();
+});
+$('flex-rst').addEventListener('click', () => {
+  state.flexMode = 'auto';
+  state.flexManual = null;
+  render();
+});
+bindInput('in-fl', 'fl');
+bindInput('in-dep', 'dep');
+bindInput('in-dst', 'dst');
+bindInput('in-gsc', 'gsc');
+bindInput('in-roc', 'roc');
+bindInput('in-gsd', 'gsd');
+bindInput('in-ang', 'ang');
+bindInput('in-buf', 'buf');
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    state.tab = t.dataset.tab;
+    $('tab-vsp').classList.toggle('hidden', state.tab !== 'vsp');
+    $('tab-cd').classList.toggle('hidden', state.tab !== 'cd');
+    render();
+  });
+});
+function tickClock() {
+  const d = new Date();
+  const hh = String(d.getUTCHours()).padStart(2, '0');
+  const mm = String(d.getUTCMinutes()).padStart(2, '0');
+  const ss = String(d.getUTCSeconds()).padStart(2, '0');
+  $('clock').textContent = `${hh}:${mm}:${ss}Z`;
+}
+tickClock();
+setInterval(tickClock, 1000);
+render();
+</script>
+</body>
+</html>
