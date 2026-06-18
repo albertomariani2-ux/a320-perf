@@ -215,9 +215,10 @@ body { font-family: 'JetBrains Mono', ui-monospace, monospace; letter-spacing: 0
         </div>
         <span class="info" id="tod-delta">Δ -- ft</span>
       </div>
-      <div class="out-grid cols-2">
+      <div class="out-grid cols-3">
         <div class="out-cell magenta"><div class="lbl">Distance</div><div class="val" id="tod-nm">--</div><div class="unit">NM</div></div>
         <div class="out-cell magenta"><div class="lbl">Time</div><div class="val" id="tod-t">--</div><div class="unit">min</div></div>
+        <div class="out-cell magenta"><div class="lbl">ROD</div><div class="val" id="tod-rod" style="font-size:22px">--</div><div class="unit">fpm</div></div>
       </div>
     </div>
     <div class="panel">
@@ -408,7 +409,8 @@ function renderCd() {
   if (d) {
     $('tod-nm').textContent = d.d;
     $('tod-t').textContent = d.t;
-    $('tod-delta').textContent = `Δ ${d.alt.toLocaleString('it-IT')} ft · ${d.rod} fpm`;
+    $('tod-rod').textContent = d.rod;
+    $('tod-delta').textContent = `Δ ${d.alt.toLocaleString('it-IT')} ft`;
   }
 }
 function render() {
